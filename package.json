@@ -1,0 +1,79 @@
+{
+    "name": "mm-ts-utils-server",
+    "version": "1.0.0",
+    "description": "Personal ts server utils",
+    "main": "dist/main.js",
+    "types": "dist/main.d.ts",
+    "scripts": {
+        "clean": "rimraf dist/*",
+        "tsc": "tsc --pretty",
+        "watch": "tsc -w --pretty",
+        "prettier": "prettier --write \"{src,scripts}/**/*.{js,jsx,ts,tsx,scss}\"",
+        "test": "cross-env NODE_ENV=test jest --watch --runInBand --no-cache",
+        "build": "npm run clean && npm run tsc",
+        "start": "npm run watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/marianmeres/mm-ts-utils-server.git"
+    },
+    "keywords": [
+        "typescript"
+    ],
+    "author": "Marian Meres <marian@meres.sk>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/marianmeres/mm-ts-utils-server/issues"
+    },
+    "homepage": "https://github.com/marianmeres/mm-ts-utils-server#readme",
+    "dependencies": {
+        "@types/generic-pool": "^3.1.9",
+        "@types/jest": "^24.0.25",
+        "@types/lodash": "^4.14.149",
+        "@types/mysql": "^2.15.8",
+        "@types/node": "^13.1.4",
+        "@types/pg": "^7.14.1",
+        "@types/sqlite3": "^3.1.6",
+        "colors": "^1.4.0",
+        "cross-env": "^6.0.3",
+        "dotenv": "^8.2.0",
+        "generic-pool": "^3.7.1",
+        "jest": "^24.9.0",
+        "lodash": "^4.17.15",
+        "mm-ts-utils": "git+https://github.com/marianmeres/mm-ts-utils.git",
+        "mysql": "^2.17.1",
+        "pg": "^7.17.0",
+        "prettier": "^1.19.1",
+        "rimraf": "^3.0.0",
+        "sqlite3": "^4.1.1",
+        "sqlstring": "^2.3.1",
+        "ts-jest": "^24.2.0",
+        "typescript": "^3.7.4"
+    },
+    "jest": {
+        "verbose": false,
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx"
+        ],
+        "transform": {
+            "^.+\\.(j|t)sx?$": "ts-jest"
+        },
+        "transformIgnorePatterns": [
+            "<rootDir>/node_modules/(?!lodash-es/.*)"
+        ],
+        "testMatch": [
+            "**/__tests__/**/*.(ts|tsx|js|jsx)",
+            "**/?(*.)(spec|test).(ts|tsx|js|jsx)"
+        ],
+        "modulePathIgnorePatterns": [
+            "<rootDir>/dist/"
+        ],
+        "globals": {
+            "NODE_ENV": "test",
+            "__TESTING__": true
+        }
+    }
+}

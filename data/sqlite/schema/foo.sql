@@ -1,0 +1,14 @@
+
+DROP TABLE IF EXISTS foo;
+CREATE TABLE foo (
+  id            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  label         VARCHAR(255)
+);
+
+DROP TABLE IF EXISTS foo2;
+CREATE TABLE foo2 (
+  id1           INTEGER NOT NULL,
+  id2           INTEGER NOT NULL,
+  label         VARCHAR(255),
+  PRIMARY KEY (id1, id2)
+);

@@ -1,0 +1,45 @@
+{
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "src/**/*.test.ts",
+        "**/__tests__/*.*"
+    ],
+    "compilerOptions": {
+//        "allowJs": false,
+//        "module": "commonjs", // no webpack
+//        "moduleResolution": "node",
+//        "outDir": "dist/",
+//        "rootDir": "src/",
+//        "target": "esnext",
+//        "lib": ["es2017", "dom"],
+//        "jsx": "react",
+//        "sourceMap": false,
+//        "declaration": false,
+//        "forceConsistentCasingInFileNames": false,
+//        "noImplicitReturns": false,
+//        "noImplicitThis": true,
+//        "noImplicitAny": false,
+//        "strictNullChecks": false,
+//        "suppressImplicitAnyIndexErrors": false,
+//        "noUnusedLocals": false,
+//        "experimentalDecorators": true,
+
+        "allowJs": false,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "target": "esnext",
+        "sourceMap": false,
+        "declaration": true,
+        "forceConsistentCasingInFileNames": false,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "suppressImplicitAnyIndexErrors": false,
+        "noUnusedLocals": false
+    }
+}
