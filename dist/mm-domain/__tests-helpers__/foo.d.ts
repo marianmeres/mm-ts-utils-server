@@ -18,4 +18,8 @@ declare class FooService extends Service<BaseFoo> {
     protected _tableName: string;
     protected _modelCtor: typeof BaseFoo;
 }
+export declare const fooAdvService: (db?: SqlUtil) => FooAdvService;
+declare class FooAdvService extends FooService {
+    protected _isDeletedColName: string;
+}
 export {};

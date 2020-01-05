@@ -7,4 +7,5 @@ export declare const _sqlUtilTestsAll: {
     '`save` (insert) works': (db: SqlUtil) => Promise<void>;
     '`save` (update) works': (db: SqlUtil) => Promise<void>;
     '`delete` works': (db: SqlUtil) => Promise<void>;
+    'only.`delete` with `is_deleted` works': (db: SqlUtil) => Promise<void>;
 };

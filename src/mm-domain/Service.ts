@@ -139,11 +139,11 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
                 `
                     UPDATE ${db.qi(this.dao.tableName)} 
                     SET ${db.qi(this._isDeletedColName)} = 1 
-                    WHERE id = $1
+                    WHERE id = ${db.qv(id)}
                 `
                     .replace(/\s\s+/g, ' ')
                     .trim(),
-                [id],
+                null,
                 debug
             );
         }

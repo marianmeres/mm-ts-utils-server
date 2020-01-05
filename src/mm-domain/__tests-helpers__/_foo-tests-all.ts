@@ -1,4 +1,4 @@
-import { BaseFoo, fooService } from './foo';
+import { BaseFoo, fooAdvService, fooService } from './foo';
 import { SqlUtil } from '../../mm-sql/SqlUtil';
 
 export const _sqlUtilTestsAll = {
@@ -70,5 +70,28 @@ export const _sqlUtilTestsAll = {
         const service = fooService(db);
         await service.delete(1, true);
         expect(await service.dao.fetchCount()).toEqual(1);
+    },
+
+    'only.`delete` with `is_deleted` works': async (db: SqlUtil) => {
+        await db.query('alter table foo add column is_deleted int default 0');
+
+        const service = fooAdvService(db);
+        await service.delete(1, false);
+
+        // raw row must be accessible
+        let row = await db.fetchRow('*', 'foo', { id: 1 });
+        expect(row.is_deleted).toEqual(1);
+        expect(await service.dao.fetchCount()).toEqual(2);
+
+        // but fetch/find must not fetch deleted rows
+        let models = await service.fetchAll();
+        expect(models.length).toEqual(1);
+        expect(models[0].id).toEqual(2);
+
+        let model = await service.find(1, false);
+        expect(model).toBeNull();
+
+        model = await service.findWhere({ label: 'foo1' }, false);
+        expect(model).toBeNull();
     },
 };

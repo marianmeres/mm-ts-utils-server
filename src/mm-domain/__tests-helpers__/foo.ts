@@ -40,3 +40,8 @@ class FooService extends Service<BaseFoo> {
 
     protected _modelCtor = BaseFoo;
 }
+
+export const fooAdvService = (db?: SqlUtil) => new FooAdvService(db);
+class FooAdvService extends FooService {
+    protected _isDeletedColName = 'is_deleted';
+}

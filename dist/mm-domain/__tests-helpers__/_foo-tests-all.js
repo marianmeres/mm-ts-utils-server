@@ -61,4 +61,21 @@ exports._sqlUtilTestsAll = {
         yield service.delete(1, true);
         expect(yield service.dao.fetchCount()).toEqual(1);
     }),
+    'only.`delete` with `is_deleted` works': (db) => __awaiter(void 0, void 0, void 0, function* () {
+        yield db.query('alter table foo add column is_deleted int default 0');
+        const service = foo_1.fooAdvService(db);
+        yield service.delete(1, false);
+        // raw row must be accessible
+        let row = yield db.fetchRow('*', 'foo', { id: 1 });
+        expect(row.is_deleted).toEqual(1);
+        expect(yield service.dao.fetchCount()).toEqual(2);
+        // but fetch/find must not fetch deleted rows
+        let models = yield service.fetchAll();
+        expect(models.length).toEqual(1);
+        expect(models[0].id).toEqual(2);
+        let model = yield service.find(1, false);
+        expect(model).toBeNull();
+        model = yield service.findWhere({ label: 'foo1' }, false);
+        expect(model).toBeNull();
+    }),
 };

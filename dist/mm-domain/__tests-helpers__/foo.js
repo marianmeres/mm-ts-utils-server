@@ -35,3 +35,10 @@ class FooService extends Service_1.Service {
         this._modelCtor = BaseFoo;
     }
 }
+exports.fooAdvService = (db) => new FooAdvService(db);
+class FooAdvService extends FooService {
+    constructor() {
+        super(...arguments);
+        this._isDeletedColName = 'is_deleted';
+    }
+}
