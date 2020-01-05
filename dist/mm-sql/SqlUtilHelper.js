@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const _mysql = require("mysql");
 const _pg = require("pg");
@@ -19,7 +28,7 @@ class SqlUtilHelper {
          * @param params
          * @returns {Promise<any>}
          */
-        const query = async (text, params) => {
+        const query = (text, params) => __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 mysqlPool.getConnection((err, conn) => {
                     if (err) {
@@ -37,12 +46,12 @@ class SqlUtilHelper {
                     });
                 });
             });
-        };
+        });
         /**
          * WARNING: EXPERIMENTAL!!!
          * @returns {Promise<any>}
          */
-        const client = async () => {
+        const client = () => __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 mysqlPool.getConnection((err, conn) => {
                     if (err) {
@@ -53,19 +62,19 @@ class SqlUtilHelper {
                     return resolve(conn);
                 });
             });
-        };
+        });
         /**
          * @param _client
          * @returns {Promise<void>}
          */
-        const clientRelease = async (_client) => {
+        const clientRelease = (_client) => __awaiter(this, void 0, void 0, function* () {
             _client.release();
             _client = null;
-        };
+        });
         /**
          * @returns {Promise<void>}
          */
-        const poolEnd = async () => mysqlPool.end();
+        const poolEnd = () => __awaiter(this, void 0, void 0, function* () { return mysqlPool.end(); });
         // prettier-ignore
         return {
             driver: 'mysql', query, client, clientRelease, config, poolEnd, raw: _mysql,
@@ -82,22 +91,22 @@ class SqlUtilHelper {
          * @param text
          * @param params
          */
-        const query = async (text, params) => pgPool.query(text, params);
+        const query = (text, params) => __awaiter(this, void 0, void 0, function* () { return pgPool.query(text, params); });
         /**
          *
          */
-        const client = async () => await pgPool.connect();
+        const client = () => __awaiter(this, void 0, void 0, function* () { return yield pgPool.connect(); });
         /**
          * @param _client
          */
-        const clientRelease = async (_client) => {
+        const clientRelease = (_client) => __awaiter(this, void 0, void 0, function* () {
             _client.release(true);
             _client = null;
-        };
+        });
         /**
          *
          */
-        const poolEnd = async () => pgPool.end();
+        const poolEnd = () => __awaiter(this, void 0, void 0, function* () { return pgPool.end(); });
         // prettier-ignore
         return {
             driver: 'pg', query, client, clientRelease, config, poolEnd, raw: _pg,
@@ -140,18 +149,18 @@ class SqlUtilHelper {
         const _clientQuery = (_client, text, params) => {
             return new Promise((resolve, reject) => {
                 _client.serialize(() => {
-                    _client.all(text, params, async (err, rows) => {
-                        await _myPool.release(_client);
+                    _client.all(text, params, (err, rows) => __awaiter(this, void 0, void 0, function* () {
+                        yield _myPool.release(_client);
                         if (err) {
                             return reject(err);
                         }
                         log(`sqlite: query finished, releasing client`);
                         resolve(rows);
-                    });
+                    }));
                 });
             });
         };
-        const query = async (text, params) => {
+        const query = (text, params) => __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 _myPool
                     .acquire()
@@ -161,35 +170,35 @@ class SqlUtilHelper {
                 })
                     .catch(reject);
             });
-        };
-        const client = async () => {
+        });
+        const client = () => __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 _myPool // ts wtf?
                     .acquire()
                     .then((_client) => {
                     log(`sqlite: client acquired (client)`);
                     // uff... monkey patch so we have normalized api across drivers...
-                    _client.query = async (text, params) => _clientQuery(_client, text, params);
+                    _client.query = (text, params) => __awaiter(this, void 0, void 0, function* () { return _clientQuery(_client, text, params); });
                     resolve(_client);
                 })
                     .catch(reject);
             });
-        };
-        const clientRelease = async (_client) => {
-            await _myPool.release(_client);
+        });
+        const clientRelease = (_client) => __awaiter(this, void 0, void 0, function* () {
+            yield _myPool.release(_client);
             _client = null;
-        };
-        const poolEnd = async () => {
+        });
+        const poolEnd = () => __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
                 _myPool // ts wtf?
                     .drain()
-                    .then(async () => {
-                    await _myPool.clear();
+                    .then(() => __awaiter(this, void 0, void 0, function* () {
+                    yield _myPool.clear();
                     resolve();
-                })
+                }))
                     .catch(reject);
             });
-        };
+        });
         // prettier-ignore
         return {
             driver: 'sqlite', config, query, client, clientRelease, poolEnd, raw: sqlite3,
