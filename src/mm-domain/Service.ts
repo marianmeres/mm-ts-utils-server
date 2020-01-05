@@ -117,6 +117,10 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
         }
         let data = await this.dao.save(model.toJSONSerialized(), debug);
         model.populate(data);
+
+        // model was just saved...
+        model.resetDirty();
+
         return model;
     }
 

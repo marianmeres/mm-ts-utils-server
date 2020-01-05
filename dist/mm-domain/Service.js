@@ -117,6 +117,8 @@ class Service {
             }
             let data = yield this.dao.save(model.toJSONSerialized(), debug);
             model.populate(data);
+            // model was just saved...
+            model.resetDirty();
             return model;
         });
     }

@@ -41,6 +41,7 @@ exports._sqlUtilTestsAll = {
             id: 123,
             label: 'hey',
         }, true));
+        expect(model.isDirty()).toBeFalsy();
         expect(model.id).toEqual(123);
         expect(model.label).toEqual('hey');
         expect(yield service.dao.fetchCount()).toEqual(3);
