@@ -8,14 +8,11 @@ import { SqlUtil } from '../../mm-sql/SqlUtil';
 import { SqlUtilHelper } from '../../mm-sql/SqlUtilHelper';
 
 // main
-const db = () =>
-    SqlUtil.mysql(SqlUtilHelper.factoryMysqlDriverProxy(configMysql));
+const db = () => SqlUtil.mysql(SqlUtilHelper.factoryMysqlDriverProxy(configMysql));
 
 // should not need to edit below
 const shouldSkip = () =>
-    !dotenv.config().parsed[
-        `MM_TS_TESTING__DB_${db().dialect.toUpperCase()}_DATABASE`
-    ];
+    !dotenv.config().parsed[`MM_TS_TESTING__DB_${db().dialect.toUpperCase()}_DATABASE`];
 
 // actual test suite
 testSuiteFactorySqlUtilDialectBased(db(), _sqlUtilTestsAll, shouldSkip);

@@ -125,25 +125,32 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
     }
 
     /**
-     * @param id
+     * @todo: implement + test for composite PK
+     * @param idOrModel
      * @param {boolean} hard
      * @param debug
      * @returns {Promise<any>}
      */
-    async delete(id, hard: boolean = false, debug?): Promise<any> {
+    async delete(idOrModel, hard: boolean = false, debug?): Promise<any> {
+        // somewhat naive...
+        const id = typeof idOrModel === 'object' ? idOrModel.id : idOrModel;
+        if (!id) {
+            throw new Error('(Service.delete) missing required id');
+        }
+
         if (hard || !this._isDeletedColName) {
             return this.dao.delete(id, debug);
         } else {
-            let db = this.dao.db;
-            return this.dao.query(
-                `
-                    UPDATE ${db.qi(this.dao.tableName)} 
-                    SET ${db.qi(this._isDeletedColName)} = 1 
-                    WHERE id = ${db.qv(id)}
-                `
-                    .replace(/\s\s+/g, ' ')
-                    .trim(),
-                null,
+            let { idCol } = this.dao.options;
+            let pkData = id;
+            // common use case: just id
+            if (!Array.isArray(idCol) && /string|number/.test(typeof pkData)) {
+                pkData = { [idCol]: pkData };
+            }
+
+            await this.dao.update(
+                { [this._isDeletedColName]: 1 },
+                this.dao.buildPkWhereFrom(pkData),
                 debug
             );
         }

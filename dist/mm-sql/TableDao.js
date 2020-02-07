@@ -38,6 +38,12 @@ class TableDao {
         this._options = options;
     }
     /**
+     *
+     */
+    get options() {
+        return this._options;
+    }
+    /**
      * @param {SqlUtil} sqlUtil
      */
     set db(sqlUtil) {
@@ -51,10 +57,8 @@ class TableDao {
     }
     /**
      * @param data
-     * @returns {{}}
-     * @private
      */
-    _buildPkWhereFrom(data) {
+    buildPkWhereFrom(data) {
         let { idCol } = this._options;
         if (Array.isArray(idCol)) {
             return idCol.reduce((where, k) => {
@@ -102,7 +106,7 @@ class TableDao {
             let { idCol } = this._options;
             let pkData;
             if (Array.isArray(idCol)) {
-                pkData = this._buildPkWhereFrom(id);
+                pkData = this.buildPkWhereFrom(id);
             }
             else {
                 pkData = { [idCol]: id };
@@ -156,7 +160,7 @@ class TableDao {
             let { idCol, autoIncrement } = this._options;
             // let isCompositePk = Array.isArray(idCol);
             let pk = Array.isArray(idCol)
-                ? this._buildPkWhereFrom(data)
+                ? this.buildPkWhereFrom(data)
                 : { [idCol]: data[idCol] };
             // DRY helper
             const _handleWriteResult = (res, wasAmbiguos) => __awaiter(this, void 0, void 0, function* () {
@@ -229,7 +233,7 @@ class TableDao {
             if (!Array.isArray(idCol) && /string|number/.test(typeof pkData)) {
                 pkData = { [idCol]: pkData };
             }
-            return this.db.delete(this.tableName, this._buildPkWhereFrom(pkData), null, debug);
+            return this.db.delete(this.tableName, this.buildPkWhereFrom(pkData), null, debug);
         });
     }
 }

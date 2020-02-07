@@ -44,6 +44,13 @@ export class TableDao {
     }
 
     /**
+     *
+     */
+    get options() {
+        return this._options;
+    }
+
+    /**
      * @param {SqlUtil} sqlUtil
      */
     set db(sqlUtil: SqlUtil) {
@@ -59,10 +66,8 @@ export class TableDao {
 
     /**
      * @param data
-     * @returns {{}}
-     * @private
      */
-    protected _buildPkWhereFrom(data) {
+    buildPkWhereFrom(data) {
         let { idCol } = this._options;
         if (Array.isArray(idCol)) {
             return (idCol as string[]).reduce((where, k) => {
@@ -108,7 +113,7 @@ export class TableDao {
         let pkData;
 
         if (Array.isArray(idCol)) {
-            pkData = this._buildPkWhereFrom(id);
+            pkData = this.buildPkWhereFrom(id);
         } else {
             pkData = { [idCol]: id };
         }
@@ -159,7 +164,7 @@ export class TableDao {
 
         // let isCompositePk = Array.isArray(idCol);
         let pk = Array.isArray(idCol)
-            ? this._buildPkWhereFrom(data)
+            ? this.buildPkWhereFrom(data)
             : { [idCol]: data[idCol] };
 
         // DRY helper
@@ -238,11 +243,6 @@ export class TableDao {
             pkData = { [idCol]: pkData };
         }
 
-        return this.db.delete(
-            this.tableName,
-            this._buildPkWhereFrom(pkData),
-            null,
-            debug
-        );
+        return this.db.delete(this.tableName, this.buildPkWhereFrom(pkData), null, debug);
     }
 }

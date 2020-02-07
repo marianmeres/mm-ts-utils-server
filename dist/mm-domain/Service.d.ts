@@ -57,10 +57,11 @@ export declare class Service<TModel extends BaseModel<BaseModelData>> {
      */
     save(model: TModel, debug?: any): Promise<TModel>;
     /**
-     * @param id
+     * @todo: implement + test for composite PK
+     * @param idOrModel
      * @param {boolean} hard
      * @param debug
      * @returns {Promise<any>}
      */
-    delete(id: any, hard?: boolean, debug?: any): Promise<any>;
+    delete(idOrModel: any, hard?: boolean, debug?: any): Promise<any>;
 }

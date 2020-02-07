@@ -27,6 +27,10 @@ export declare class TableDao {
      */
     constructor(tableName: string, options?: TableDaoOptions);
     /**
+     *
+     */
+    get options(): TableDaoOptions;
+    /**
      * @param {SqlUtil} sqlUtil
      */
     set db(sqlUtil: SqlUtil);
@@ -36,10 +40,8 @@ export declare class TableDao {
     get db(): SqlUtil;
     /**
      * @param data
-     * @returns {{}}
-     * @private
      */
-    protected _buildPkWhereFrom(data: any): {};
+    buildPkWhereFrom(data: any): {};
     /**
      * v principe getter na db, akurat o 1 uroven abstrahovany...
      *

@@ -12,9 +12,7 @@ const db = () => SqlUtil.pg(SqlUtilHelper.factoryPgDriverProxy(configPg));
 
 // should not need to edit below
 const shouldSkip = () =>
-    !dotenv.config().parsed[
-        `MM_TS_TESTING__DB_${db().dialect.toUpperCase()}_DATABASE`
-    ];
+    !dotenv.config().parsed[`MM_TS_TESTING__DB_${db().dialect.toUpperCase()}_DATABASE`];
 
 // actual test suite
 testSuiteFactorySqlUtilDialectBased(db(), _sqlUtilTestsAll, shouldSkip);

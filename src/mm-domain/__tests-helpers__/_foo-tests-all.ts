@@ -72,7 +72,15 @@ export const _sqlUtilTestsAll = {
         expect(await service.dao.fetchCount()).toEqual(1);
     },
 
-    'only.`delete` with `is_deleted` works': async (db: SqlUtil) => {
+    '`delete` works (with model)': async (db: SqlUtil) => {
+        const service = fooService(db);
+        const model = await service.save(new BaseFoo({ id: 2, label: 'hey' }, true));
+
+        await service.delete(model, true);
+        expect(await service.dao.fetchCount()).toEqual(1);
+    },
+
+    '`delete` with `is_deleted` works': async (db: SqlUtil) => {
         await db.query('alter table foo add column is_deleted int default 0');
 
         const service = fooAdvService(db);
@@ -89,6 +97,31 @@ export const _sqlUtilTestsAll = {
         expect(models[0].id).toEqual(2);
 
         let model = await service.find(1, false);
+        expect(model).toBeNull();
+
+        model = await service.findWhere({ label: 'foo1' }, false);
+        expect(model).toBeNull();
+    },
+
+    '`delete` with `is_deleted` and model as parameter works': async (db: SqlUtil) => {
+        await db.query('alter table foo add column is_deleted int default 0');
+        const service = fooAdvService(db);
+
+        let model = await service.save(new BaseFoo({ id: 1, label: 'hey' }, true));
+
+        await service.delete(model, false);
+
+        // raw row must be accessible
+        let row = await db.fetchRow('*', 'foo', { id: 1 });
+        expect(row.is_deleted).toEqual(1);
+        expect(await service.dao.fetchCount()).toEqual(2);
+
+        // but fetch/find must not fetch deleted rows
+        let models = await service.fetchAll();
+        expect(models.length).toEqual(1);
+        expect(models[0].id).toEqual(2);
+
+        model = await service.find(1, false);
         expect(model).toBeNull();
 
         model = await service.findWhere({ label: 'foo1' }, false);
