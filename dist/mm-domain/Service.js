@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const mm_ts_utils_1 = require("mm-ts-utils");
 const TableDao_1 = require("../mm-sql/TableDao");
 exports.assertWhereNotString = (where) => {
     if (typeof where === 'string') {
@@ -131,7 +132,7 @@ class Service {
     delete(idOrModel, hard = false, debug) {
         return __awaiter(this, void 0, void 0, function* () {
             // somewhat naive...
-            const id = typeof idOrModel === 'object' ? idOrModel.id : idOrModel;
+            const id = idOrModel instanceof mm_ts_utils_1.BaseModel ? idOrModel.id : idOrModel;
             if (!id) {
                 throw new Error('(Service.delete) missing required id');
             }

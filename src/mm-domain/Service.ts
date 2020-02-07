@@ -132,7 +132,7 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
      */
     async delete(idOrModel, hard: boolean = false, debug?): Promise<any> {
         // somewhat naive...
-        const id = typeof idOrModel === 'object' ? idOrModel.id : idOrModel;
+        const id = idOrModel instanceof BaseModel ? idOrModel.id : idOrModel;
         if (!id) {
             throw new Error('(Service.delete) missing required id');
         }
