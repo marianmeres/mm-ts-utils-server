@@ -54,9 +54,8 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
 
     /**
      * @param id
-     * @param {boolean} assert
+     * @param assert
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     async find(id, assert: boolean = true, debug?): Promise<TModel> {
         let pk = { id };
@@ -69,9 +68,8 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
 
     /**
      * @param where
-     * @param {boolean} assert
+     * @param assert
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     async findWhere(where, assert: boolean = false, debug?): Promise<TModel> {
         assertWhereNotString(where);
@@ -86,7 +84,6 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
      * @param where
      * @param options
      * @param debug
-     * @returns {Promise<TModel[]>}
      */
     async fetchAll(where?, options?, debug?): Promise<TModel[]> {
         assertWhereNotString(where);
@@ -103,13 +100,15 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
      */
     async fetchCount(where?): Promise<number> {
         assertWhereNotString(where);
+        if (this._isDeletedColName) {
+            where = { ...where, [this._isDeletedColName]: 0 };
+        }
         return this.dao.fetchCount(where);
     }
 
     /**
-     * @param {TModel} model
+     * @param model
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     async save(model: TModel, debug?): Promise<TModel> {
         if (!model.isDirty()) {

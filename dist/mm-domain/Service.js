@@ -49,9 +49,8 @@ class Service {
     }
     /**
      * @param id
-     * @param {boolean} assert
+     * @param assert
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     find(id, assert = true, debug) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -65,9 +64,8 @@ class Service {
     }
     /**
      * @param where
-     * @param {boolean} assert
+     * @param assert
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     findWhere(where, assert = false, debug) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -83,7 +81,6 @@ class Service {
      * @param where
      * @param options
      * @param debug
-     * @returns {Promise<TModel[]>}
      */
     fetchAll(where, options, debug) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -102,13 +99,15 @@ class Service {
     fetchCount(where) {
         return __awaiter(this, void 0, void 0, function* () {
             exports.assertWhereNotString(where);
+            if (this._isDeletedColName) {
+                where = Object.assign(Object.assign({}, where), { [this._isDeletedColName]: 0 });
+            }
             return this.dao.fetchCount(where);
         });
     }
     /**
-     * @param {TModel} model
+     * @param model
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     save(model, debug) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -132,7 +131,7 @@ class Service {
     delete(idOrModel, hard = false, debug) {
         return __awaiter(this, void 0, void 0, function* () {
             // somewhat naive...
-            const id = (typeof idOrModel === 'object') ? idOrModel.id : idOrModel;
+            const id = typeof idOrModel === 'object' ? idOrModel.id : idOrModel;
             if (!id) {
                 throw new Error('(Service.delete) missing required id');
             }

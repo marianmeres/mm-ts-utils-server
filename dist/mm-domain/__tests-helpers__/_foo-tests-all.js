@@ -63,7 +63,7 @@ exports._sqlUtilTestsAll = {
     }),
     '`delete` works (with model)': (db) => __awaiter(void 0, void 0, void 0, function* () {
         const service = foo_1.fooService(db);
-        const model = yield service.save(new foo_1.BaseFoo({ id: 2, label: 'hey', }, true));
+        const model = yield service.save(new foo_1.BaseFoo({ id: 2, label: 'hey' }, true));
         yield service.delete(model, true);
         expect(yield service.dao.fetchCount()).toEqual(1);
     }),
@@ -87,7 +87,7 @@ exports._sqlUtilTestsAll = {
     '`delete` with `is_deleted` and model as parameter works': (db) => __awaiter(void 0, void 0, void 0, function* () {
         yield db.query('alter table foo add column is_deleted int default 0');
         const service = foo_1.fooAdvService(db);
-        let model = yield service.save(new foo_1.BaseFoo({ id: 1, label: 'hey', }, true));
+        let model = yield service.save(new foo_1.BaseFoo({ id: 1, label: 'hey' }, true));
         yield service.delete(model, false);
         // raw row must be accessible
         let row = yield db.fetchRow('*', 'foo', { id: 1 });

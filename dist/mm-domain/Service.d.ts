@@ -26,23 +26,20 @@ export declare class Service<TModel extends BaseModel<BaseModelData>> {
     protected _fetchRow(pk: any, assert: any, debug: any): Promise<any>;
     /**
      * @param id
-     * @param {boolean} assert
+     * @param assert
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     find(id: any, assert?: boolean, debug?: any): Promise<TModel>;
     /**
      * @param where
-     * @param {boolean} assert
+     * @param assert
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     findWhere(where: any, assert?: boolean, debug?: any): Promise<TModel>;
     /**
      * @param where
      * @param options
      * @param debug
-     * @returns {Promise<TModel[]>}
      */
     fetchAll(where?: any, options?: any, debug?: any): Promise<TModel[]>;
     /**
@@ -51,9 +48,8 @@ export declare class Service<TModel extends BaseModel<BaseModelData>> {
      */
     fetchCount(where?: any): Promise<number>;
     /**
-     * @param {TModel} model
+     * @param model
      * @param debug
-     * @returns {Promise<TModel extends BaseModel>}
      */
     save(model: TModel, debug?: any): Promise<TModel>;
     /**
