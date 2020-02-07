@@ -24,6 +24,9 @@ class Service {
     constructor(_db) {
         this._db = _db;
     }
+    get tableName() {
+        return this._tableName;
+    }
     set db(db) {
         this._db = db;
     }

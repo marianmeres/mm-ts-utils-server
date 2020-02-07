@@ -13,6 +13,7 @@ export declare class Service<TModel extends BaseModel<BaseModelData>> {
     protected _modelCtor: any;
     protected _isDeletedColName: null | string;
     constructor(_db?: SqlUtil);
+    get tableName(): string;
     set db(db: SqlUtil | null);
     get db(): SqlUtil | null;
     get dao(): TableDao;

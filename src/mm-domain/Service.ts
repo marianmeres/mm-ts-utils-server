@@ -23,6 +23,10 @@ export class Service<TModel extends BaseModel<BaseModelData>> {
 
     constructor(protected _db?: SqlUtil) {}
 
+    get tableName() {
+        return this._tableName;
+    }
+
     set db(db: SqlUtil | null) {
         this._db = db;
     }
