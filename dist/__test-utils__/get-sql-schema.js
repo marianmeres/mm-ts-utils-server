@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getSqlSchema = void 0;
 const fs = require("fs");
 const path = require("path");
 const colors = require("colors/safe");

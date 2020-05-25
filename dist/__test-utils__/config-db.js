@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.configSqlite = exports.configPg = exports.configMysql = void 0;
 const dotenv = require("dotenv");
 dotenv.config();
 exports.configMysql = {

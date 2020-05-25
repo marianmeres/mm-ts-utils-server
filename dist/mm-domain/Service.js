@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Service = exports.assertWhereNotString = void 0;
 const mm_ts_utils_1 = require("mm-ts-utils");
 const TableDao_1 = require("../mm-sql/TableDao");
 exports.assertWhereNotString = (where) => {

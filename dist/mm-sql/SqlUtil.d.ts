@@ -13,9 +13,9 @@ export declare class SqlUtil {
      *
      */
     protected static readonly _dialectNormalizeMap: {
-        [SqlUtil.DIALECT_PG]: RegExp;
-        [SqlUtil.DIALECT_MYSQL]: RegExp;
-        [SqlUtil.DIALECT_SQLITE]: RegExp;
+        pg: RegExp;
+        mysql: RegExp;
+        sqlite: RegExp;
     };
     /**
      *

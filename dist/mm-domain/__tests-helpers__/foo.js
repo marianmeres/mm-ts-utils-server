@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fooAdvService = exports.fooService = exports.BaseFoo = void 0;
 const Service_1 = require("../Service");
 const mm_ts_utils_1 = require("mm-ts-utils");
 class BaseFoo extends mm_ts_utils_1.BaseModel {

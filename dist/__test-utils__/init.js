@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports._initDb = exports._importData = exports._queryMultipleStatements = exports._splitAsMultipleStatements = void 0;
 const fs = require("fs");
 const get_sql_schema_1 = require("./get-sql-schema");
 const path = require("path");

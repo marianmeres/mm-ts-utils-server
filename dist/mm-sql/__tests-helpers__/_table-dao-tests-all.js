@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports._sqlUtilTestsAll = void 0;
 const TableDao_1 = require("../TableDao");
 const dao = (db) => new TableDao_1.TableDao('foo', { db });
 const dao2 = (db) => new TableDao_1.TableDao('foo2', {
