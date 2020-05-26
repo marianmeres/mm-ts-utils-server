@@ -1,235 +1,28 @@
-import * as _mysql from 'mysql';
-import * as _pg from 'pg';
-import * as util from 'util';
-import * as sqlite3 from 'sqlite3';
-import * as genericPool from 'generic-pool';
 import { DbConfig } from '../__test-utils__/misc';
+import { factoryMysqlDriverProxy } from './SqlUtilHelper/factory-mysql-driver-proxy';
+import { factorySqliteDriverProxy } from './SqlUtilHelper/factory-sqlite-driver-proxy';
+import { factoryPgDriverProxy } from './SqlUtilHelper/factory-pg-driver-proxy';
 
 export class SqlUtilHelper {
     /**
      * @param config
      */
     static factoryMysqlDriverProxy(config: DbConfig) {
-        const mysqlPool = _mysql.createPool(
-            Object.assign({}, config as any, {
-                // force same behavior as pg
-                multipleStatements: true,
-            })
-        );
-
-        /**
-         * @param text
-         * @param params
-         * @returns {Promise<any>}
-         */
-        const query = async (text, params) => {
-            return new Promise((resolve, reject) => {
-                mysqlPool.getConnection((err, conn) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    conn.query(text, params || [], (error, results, fields) => {
-                        conn.release();
-                        // error will be an Error if one occurred during the query
-                        if (error) {
-                            return reject(error);
-                        }
-                        // results will contain the results of the query
-                        return resolve(results);
-                        // fields will contain information about the returned results fields (if any)
-                    });
-                });
-            });
-        };
-
-        /**
-         * WARNING: EXPERIMENTAL!!!
-         * @returns {Promise<any>}
-         */
-        const client = async () => {
-            return new Promise((resolve, reject) => {
-                mysqlPool.getConnection((err, conn) => {
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    // uff... monkey patch so we have normalized api across drivers...
-                    conn.query = util.promisify(conn.query) as any;
-
-                    return resolve(conn);
-                });
-            });
-        };
-
-        /**
-         * @param _client
-         * @returns {Promise<void>}
-         */
-        const clientRelease = async (_client) => {
-            _client.release();
-            _client = null;
-        };
-
-        /**
-         * @returns {Promise<void>}
-         */
-        const poolEnd = async () => mysqlPool.end();
-
-        // prettier-ignore
-        return {
-            driver: 'mysql', query, client, clientRelease, config, poolEnd, raw: _mysql,
-        };
+        return factoryMysqlDriverProxy(config);
     }
 
     /**
      * @param config
      */
     static factoryPgDriverProxy(config: DbConfig) {
-        const { Pool } = _pg;
-        const pgPool = new Pool(config);
-        pgPool.on('error', (err, _client) =>
-            console.error(`pgPool error: ${err.toString()}`)
-        );
-
-        /**
-         * @param text
-         * @param params
-         */
-        const query = async (text, params) => pgPool.query(text, params);
-
-        /**
-         *
-         */
-        const client = async () => await pgPool.connect();
-
-        /**
-         * @param _client
-         */
-        const clientRelease = async (_client) => {
-            _client.release(true);
-            _client = null;
-        };
-
-        /**
-         *
-         */
-        const poolEnd = async () => pgPool.end();
-
-        // prettier-ignore
-        return {
-            driver: 'pg', query, client, clientRelease, config, poolEnd, raw: _pg,
-        };
+        return factoryPgDriverProxy(config);
     }
 
     /**
      * @param config
      */
     static factorySqliteDriverProxy(config: DbConfig) {
-        const log = (msg) => (config.logger ? config.logger(msg) : null);
-
-        if (!config.database) {
-            throw new Error("Missing 'database' config entry");
-        }
-
-        // create pool so we have similar interface with other drivers
-        const _myPool = genericPool.createPool(
-            {
-                create: (): Promise<sqlite3.Database> => {
-                    return new Promise((resolve, reject) => {
-                        let _client = new (sqlite3.verbose().Database)(
-                            config.database,
-                            (err) => {
-                                err && reject(err);
-                            }
-                        );
-                        _client.once('open', () => {
-                            log(`sqlite: open ${config.database}`);
-                            resolve(_client);
-                        });
-                        _client.once('close', () =>
-                            log(`sqlite: close ${config.database}`)
-                        );
-                        // _client.on('error', (e) => log(`sqlite: error ${e}`));
-                    });
-                },
-                destroy: (_client: sqlite3.Database): Promise<void> => {
-                    return new Promise((resolve, reject) => {
-                        _client.close((err) => (err ? reject(err) : resolve()));
-                    });
-                },
-            },
-            // intentionally just size 1... (reported issues on multiple clients with sqlite)
-            {
-                min: 1,
-                max: 1,
-            }
-        );
-
-        const _clientQuery = (_client: sqlite3.Database, text, params) => {
-            return new Promise((resolve, reject) => {
-                _client.serialize(() => {
-                    _client.all(text, params, async (err, rows) => {
-                        await _myPool.release(_client);
-                        if (err) {
-                            return reject(err);
-                        }
-                        log(`sqlite: query finished, releasing client`);
-                        resolve(rows);
-                    });
-                });
-            });
-        };
-
-        const query = async (text, params) => {
-            return new Promise((resolve, reject) => {
-                (_myPool as any)
-                    .acquire()
-                    .then((_client: sqlite3.Database) => {
-                        log(`sqlite: client acquired (query)`);
-                        return resolve(_clientQuery(_client, text, params));
-                    })
-                    .catch(reject);
-            });
-        };
-
-        const client = async () => {
-            return new Promise((resolve, reject) => {
-                (_myPool as any) // ts wtf?
-                    .acquire()
-                    .then((_client: sqlite3.Database) => {
-                        log(`sqlite: client acquired (client)`);
-
-                        // uff... monkey patch so we have normalized api across drivers...
-                        (_client as any).query = async (text, params) =>
-                            _clientQuery(_client, text, params);
-
-                        resolve(_client);
-                    })
-                    .catch(reject);
-            });
-        };
-
-        const clientRelease = async (_client) => {
-            await _myPool.release(_client);
-            _client = null;
-        };
-
-        const poolEnd = async () => {
-            return new Promise((resolve, reject) => {
-                (_myPool as any) // ts wtf?
-                    .drain()
-                    .then(async () => {
-                        await _myPool.clear();
-                        resolve();
-                    })
-                    .catch(reject);
-            });
-        };
-
-        // prettier-ignore
-        return {
-            driver: 'sqlite', config, query, client, clientRelease, poolEnd, raw: sqlite3,
-        };
+        return factorySqliteDriverProxy(config);
     }
 
     /**

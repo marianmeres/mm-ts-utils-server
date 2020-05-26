@@ -1,6 +1,3 @@
-import * as _mysql from 'mysql';
-import * as _pg from 'pg';
-import * as sqlite3 from 'sqlite3';
 import { DbConfig } from '../__test-utils__/misc';
 export declare class SqlUtilHelper {
     /**
@@ -13,19 +10,24 @@ export declare class SqlUtilHelper {
         clientRelease: (_client: any) => Promise<void>;
         config: DbConfig;
         poolEnd: () => Promise<void>;
-        raw: typeof _mysql;
+        raw: typeof import("mysql");
     };
     /**
      * @param config
      */
     static factoryPgDriverProxy(config: DbConfig): {
+        /**
+         * Simple helper to replace special placeholders with correct dialect
+         * @param sql
+         * @param dialect
+         */
         driver: string;
-        query: (text: any, params: any) => Promise<_pg.QueryArrayResult<any[]>>;
-        client: () => Promise<_pg.PoolClient>;
+        query: (text: any, params: any) => Promise<import("pg").QueryArrayResult<any[]>>;
+        client: () => Promise<import("pg").PoolClient>;
         clientRelease: (_client: any) => Promise<void>;
         config: DbConfig;
         poolEnd: () => Promise<void>;
-        raw: typeof _pg;
+        raw: typeof import("pg");
     };
     /**
      * @param config
@@ -37,7 +39,7 @@ export declare class SqlUtilHelper {
         client: () => Promise<unknown>;
         clientRelease: (_client: any) => Promise<void>;
         poolEnd: () => Promise<unknown>;
-        raw: typeof sqlite3;
+        raw: typeof import("sqlite3");
     };
     /**
      * Simple helper to replace special placeholders with correct dialect
