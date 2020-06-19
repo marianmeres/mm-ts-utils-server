@@ -7,6 +7,7 @@ export interface DbConfig {
     port?: number;
     logger?: (msg: any) => void;
     initSqls?: string[];
+    ssl?: any;
 }
 export interface PgDbConfig extends DbConfig {
     connectionTimeoutMillis?: number;
