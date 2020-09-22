@@ -39,7 +39,7 @@
         "dotenv": "^8.2.0",
         "generic-pool": "^3.7.1",
         "jest": "^26.0.1",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "mm-ts-utils": "git+https://github.com/marianmeres/mm-ts-utils.git",
         "mysql": "^2.18.1",
         "pg": "^8.2.1",
